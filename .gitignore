@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+
+# Environment variables / API keys
+.env
+.env.local
+
+# Node modules
+web/frontend/node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Support data (tickets, logs — generated at runtime)
+use_cases/customer_support/support_data/
+use_cases/meeting_prep/briefings/
+assistant_data/
+
+# OS files
+.DS_Store
