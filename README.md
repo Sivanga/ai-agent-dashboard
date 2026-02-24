@@ -22,6 +22,12 @@ A production-ready framework for building and deploying AI agents that solve rea
 - Saves briefings for future reference
 - Covers: company overview, leadership, news, competitors, talking points
 
+### 📊 Retail Data Analyzer
+- Analyzes sales, inventory, and customer CSV data with Python pandas
+- Flags low stock items and calculates profit margins
+- Identifies top customers and revenue trends
+- Provides actionable business recommendations
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -45,6 +51,7 @@ A production-ready framework for building and deploying AI agents that solve rea
                                  │ • Tickets    │
                                  │ • Orders     │
                                  │ • Briefings  │
+                                 │ • Bash/Pandas│
                                  └──────────────┘
 ```
 
@@ -62,14 +69,13 @@ A production-ready framework for building and deploying AI agents that solve rea
 ├── use_cases/
 │   ├── customer_support/
 │   │   ├── agent.py               # Standalone CLI agent
-│   │   └── knowledge_base/        # Company FAQ documents
-│   └── meeting_prep/
+│   │   └── knowledge_base/        # Company FAQ documents (4 .md files)
+│   ├── meeting_prep/
+│   │   ├── agent.py               # Standalone CLI agent
+│   │   └── briefings/             # Generated briefing docs
+│   └── retail_analyzer/
 │       ├── agent.py               # Standalone CLI agent
-│       └── briefings/             # Generated briefing docs
-├── step1_basic.py                 # Tutorial: basic agent
-├── step2_conversation.py          # Tutorial: conversation loop
-├── step3_tools.py                 # Tutorial: custom tools
-└── step4_subagents.py             # Tutorial: multi-agent system
+│       └── sample_data/           # CSV files (sales, inventory, customers)
 ```
 
 ## Getting Started
@@ -88,7 +94,7 @@ cd ai-agent-dashboard
 # Backend
 python3.12 -m venv venv
 source venv/bin/activate
-pip install claude-agent-sdk fastapi uvicorn websockets
+pip install claude-agent-sdk fastapi uvicorn websockets pandas
 
 # Frontend
 cd web/frontend
@@ -110,6 +116,16 @@ npm run dev
 ```
 
 Open **http://localhost:5173**
+
+### Standalone CLI Agents (optional)
+
+Run any agent directly in the terminal without the web UI:
+```bash
+source venv/bin/activate
+python3 use_cases/customer_support/agent.py
+python3 use_cases/meeting_prep/agent.py
+python3 use_cases/retail_analyzer/agent.py
+```
 
 ## Customisation for Clients
 
