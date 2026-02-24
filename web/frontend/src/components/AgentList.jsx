@@ -3,19 +3,19 @@ const AGENTS = [
     id: "customer_support",
     name: "Customer Support",
     description: "Handles customer inquiries using a knowledge base",
-    icon: "🏪",
+    initials: "CS",
   },
   {
     id: "meeting_prep",
     name: "Meeting Prep",
     description: "Researches companies and generates briefings",
-    icon: "📋",
+    initials: "MP",
   },
   {
     id: "retail_analyzer",
     name: "Retail Analyzer",
     description: "Analyze sales, inventory, and customer data",
-    icon: "📊",
+    initials: "RA",
   },
 ];
 
@@ -29,7 +29,7 @@ export default function AgentList({ selectedAgent, onSelect }) {
           className={`agent-card ${selectedAgent?.id === agent.id ? "active" : ""}`}
           onClick={() => onSelect(agent)}
         >
-          <span className="agent-icon">{agent.icon}</span>
+          <span className="agent-initials">{agent.initials}</span>
           <div>
             <h3>{agent.name}</h3>
             <p>{agent.description}</p>

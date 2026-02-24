@@ -144,7 +144,7 @@ export default function ChatWindow({ agent }) {
   return (
     <div className="chat-window">
       <div className="chat-header">
-        <span className="chat-icon">{agent.icon}</span>
+        <span className="chat-initials">{agent.initials}</span>
         <div>
           <h2>{agent.name}</h2>
           <span className={`status ${status === "Connected" ? "online" : ""}`}>
@@ -172,9 +172,9 @@ export default function ChatWindow({ agent }) {
           <div key={i} className={`message ${msg.role}`}>
             <span className="msg-label">
               {msg.role === "user" && "You"}
-              {msg.role === "assistant" && `${agent.icon} ${agent.name}`}
-              {msg.role === "tool" && "🔧 Tool"}
-              {msg.role === "error" && "❌ Error"}
+              {msg.role === "assistant" && agent.name}
+              {msg.role === "tool" && "Tool"}
+              {msg.role === "error" && "Error"}
             </span>
             <div className="msg-text">
               {msg.role === "assistant" ? (
@@ -190,7 +190,7 @@ export default function ChatWindow({ agent }) {
 
         {isLoading && (
           <div className="message assistant">
-            <span className="msg-label">{agent.icon} {agent.name}</span>
+            <span className="msg-label">{agent.name}</span>
             <div className="msg-text typing">
               <span></span><span></span><span></span>
             </div>
