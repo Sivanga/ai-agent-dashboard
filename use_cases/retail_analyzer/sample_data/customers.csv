@@ -1,0 +1,11 @@
+customer_id,name,type,total_spent,orders_count,first_purchase,last_purchase,loyalty_points,city
+C001,Emma Johnson,returning,1245.50,8,2025-03-15,2026-02-15,624,London
+C002,James Smith,returning,890.30,5,2025-06-20,2026-02-10,445,Manchester
+C003,Sophie Williams,new,159.92,1,2026-01-07,2026-01-07,80,Birmingham
+C004,Oliver Brown,returning,2340.00,15,2024-11-01,2026-02-21,1170,London
+C005,Amelia Taylor,returning,567.80,4,2025-09-12,2026-01-28,284,Leeds
+C006,Harry Wilson,new,239.98,1,2026-01-14,2026-01-14,120,Bristol
+C007,Isla Davies,returning,1890.25,12,2025-01-05,2026-02-19,945,Edinburgh
+C008,George Evans,returning,445.90,3,2025-08-30,2026-02-05,223,London
+C009,Mia Thomas,new,124.95,1,2026-01-05,2026-01-05,62,Cardiff
+C010,Jack Roberts,returning,3210.40,20,2024-06-15,2026-02-21,1605,Manchester

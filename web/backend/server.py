@@ -22,6 +22,7 @@ TICKETS_DIR = BASE_DIR / "use_cases" / "customer_support" / "support_data" / "ti
 TICKETS_DIR.mkdir(parents=True, exist_ok=True)
 BRIEFINGS_DIR = BASE_DIR / "use_cases" / "meeting_prep" / "briefings"
 BRIEFINGS_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR = BASE_DIR / "use_cases" / "retail_analyzer" / "sample_data"
 
 
 # ════════════════════════════════════════
@@ -138,6 +139,30 @@ Be concise — briefings should be a 2-minute read.""",
             "mcp__prep__save_briefing",
         ],
     },
+    "retail_analyzer": {
+        "model": "haiku",
+        "system_prompt": f"""You are a retail business data analyst.
+
+DATA FILES (use these exact paths with Bash + Python):
+- {DATA_DIR}/sales_2026.csv — Sales transactions (date, product, category, quantity, unit_price, total, customer_type, payment_method)
+- {DATA_DIR}/inventory.csv — Stock levels (product, category, in_stock, reorder_level, cost_price, retail_price, supplier)
+- {DATA_DIR}/customers.csv — Customer data (name, type, total_spent, orders_count, loyalty_points, city)
+
+HOW TO ANALYZE:
+- ALWAYS use Bash to run Python pandas commands to read and analyze data
+- Do everything in a single python3 -c command, for example:
+  python3 -c "import pandas as pd; df = pd.read_csv('{DATA_DIR}/sales_2026.csv'); print('Total Revenue: £' + str(round(df['total'].sum(), 2)))"
+- NEVER just read the file — always calculate with pandas
+- Give specific numbers, percentages, and rankings
+- Flag problems (low stock items where in_stock < reorder_level)
+- Compare metrics when possible
+- Suggest actionable business decisions
+- Keep responses concise and focused on insights""",
+        "mcp_servers": {},
+        "allowed_tools": [
+            "Read", "Bash", "Glob", "Grep", "Write",
+        ],
+    },
 }
 
 
@@ -174,7 +199,7 @@ async def websocket_endpoint(websocket: WebSocket, agent_id: str):
     options = ClaudeAgentOptions(
         system_prompt=config["system_prompt"],
         model=config.get("model", "haiku"),
-        mcp_servers=config["mcp_servers"],
+        mcp_servers=config.get("mcp_servers", {}),
         allowed_tools=config["allowed_tools"],
         permission_mode="acceptEdits",
     )

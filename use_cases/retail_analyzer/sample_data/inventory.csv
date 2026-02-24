@@ -1,0 +1,11 @@
+product,category,in_stock,reorder_level,cost_price,retail_price,supplier,last_restocked
+Winter Jacket,Outerwear,23,15,45.00,89.99,Nordic Textiles,2026-01-20
+Wool Scarf,Accessories,67,30,8.50,24.99,Nordic Textiles,2026-02-01
+Running Shoes,Footwear,12,20,55.00,119.99,SportStep Ltd,2026-01-15
+Cotton T-Shirt,Tops,145,50,6.00,19.99,BasicWear Co,2026-02-10
+Leather Belt,Accessories,34,25,12.00,34.99,CraftLeather,2026-01-28
+Denim Jeans,Bottoms,28,20,22.00,59.99,DenimWorks,2026-02-05
+Rain Coat,Outerwear,8,15,35.00,74.99,Nordic Textiles,2025-12-10
+Hiking Boots,Footwear,5,10,65.00,139.99,SportStep Ltd,2025-12-20
+Silk Tie,Accessories,42,20,15.00,44.99,CraftLeather,2026-01-10
+Chino Trousers,Bottoms,19,15,18.00,49.99,BasicWear Co,2026-02-01

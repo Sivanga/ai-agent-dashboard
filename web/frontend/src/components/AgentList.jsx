@@ -11,6 +11,12 @@ const AGENTS = [
     description: "Researches companies and generates briefings",
     icon: "📋",
   },
+  {
+    id: "retail_analyzer",
+    name: "Retail Analyzer",
+    description: "Analyze sales, inventory, and customer data",
+    icon: "📊",
+  },
 ];
 
 export default function AgentList({ selectedAgent, onSelect }) {

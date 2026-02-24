@@ -13,6 +13,13 @@ const SUGGESTIONS = {
     "Tell me about Anthropic",
     "Research Shopify for a sales call",
   ],
+  retail_analyzer: [
+    "What's my total revenue?",
+    "Which products are low on stock?",
+    "Who are my top 3 customers?",
+    "Show me sales by category",
+    "What are my profit margins?",
+  ],
 };
 
 export default function ChatWindow({ agent }) {
