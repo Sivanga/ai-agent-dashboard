@@ -1,5 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 
+const TOOL_LABELS = {
+  search_knowledge_base: { loading: "Searching knowledge base...", done: "Searched knowledge base" },
+  create_ticket: { loading: "Creating support ticket...", done: "Created support ticket" },
+  check_order: { loading: "Checking order status...", done: "Checked order status" },
+  save_briefing: { loading: "Saving briefing...", done: "Saved briefing" },
+  WebSearch: { loading: "Searching the web...", done: "Web search complete" },
+  WebFetch: { loading: "Fetching web page...", done: "Fetched web page" },
+  Bash: { loading: "Running analysis...", done: "Analysis complete" },
+  Read: { loading: "Reading data...", done: "Read data" },
+  Write: { loading: "Writing file...", done: "Wrote file" },
+  Glob: { loading: "Searching files...", done: "File search complete" },
+  Grep: { loading: "Searching content...", done: "Content search complete" },
+};
+
+function getToolLabel(text, isLoading) {
+  let name = text.replace("Using: ", "");
+  if (name.startsWith("mcp__")) name = name.split("__").pop();
+  const label = TOOL_LABELS[name];
+  if (!label) return isLoading ? `Running ${name}...` : `Used ${name}`;
+  return isLoading ? label.loading : label.done;
+}
+
 const SUGGESTIONS = {
   customer_support: [
     "Do you offer free shipping?",
@@ -45,21 +67,28 @@ export default function ChatWindow({ agent }) {
       const data = JSON.parse(event.data);
       switch (data.type) {
         case "assistant":
-          setMessages((prev) => [...prev, { role: "assistant", text: data.text }]);
+          setMessages((prev) => [
+            ...prev.map(m => m.loading ? { ...m, loading: false } : m),
+            { role: "assistant", text: data.text },
+          ]);
           setIsLoading(false);
           break;
         case "tool":
-          setMessages((prev) => [...prev, { role: "tool", text: data.text }]);
+          setMessages((prev) => [...prev, { role: "tool", text: data.text, loading: true }]);
           break;
         case "status":
           if (data.text === "Thinking...") setIsLoading(true);
           if (data.text === "Connected") setStatus("Connected");
           break;
         case "error":
-          setMessages((prev) => [...prev, { role: "error", text: data.text }]);
+          setMessages((prev) => [
+            ...prev.map(m => m.loading ? { ...m, loading: false } : m),
+            { role: "error", text: data.text },
+          ]);
           setIsLoading(false);
           break;
         case "done":
+          setMessages((prev) => prev.map(m => m.loading ? { ...m, loading: false } : m));
           setIsLoading(false);
           break;
       }
@@ -119,7 +148,10 @@ export default function ChatWindow({ agent }) {
               {msg.role === "tool" && "🔧 Tool"}
               {msg.role === "error" && "❌ Error"}
             </span>
-            <div className="msg-text">{msg.text}</div>
+            <div className="msg-text">
+              {msg.role === "tool" ? getToolLabel(msg.text, msg.loading) : msg.text}
+              {msg.loading && <span className="tool-spinner"></span>}
+            </div>
           </div>
         ))}
 

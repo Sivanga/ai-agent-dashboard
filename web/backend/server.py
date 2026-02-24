@@ -185,6 +185,23 @@ async def health():
     return {"status": "ok"}
 
 
+async def process_response(client, websocket):
+    """Process SDK response messages. Returns True if a text response was sent."""
+    got_text = False
+    async for msg in client.receive_response():
+        if isinstance(msg, AssistantMessage):
+            for block in msg.content:
+                if hasattr(block, "text") and block.text.strip():
+                    await websocket.send_json({"type": "assistant", "text": block.text})
+                    got_text = True
+                elif hasattr(block, "name"):
+                    await websocket.send_json({"type": "tool", "text": f"Using: {block.name}"})
+        elif isinstance(msg, ResultMessage):
+            if msg.subtype == "error":
+                await websocket.send_json({"type": "error", "text": str(msg.error)})
+    return got_text
+
+
 @app.websocket("/ws/{agent_id}")
 async def websocket_endpoint(websocket: WebSocket, agent_id: str):
     await websocket.accept()
@@ -218,20 +235,21 @@ async def websocket_endpoint(websocket: WebSocket, agent_id: str):
                 await websocket.send_json({"type": "status", "text": "Thinking..."})
                 await client.query(user_text)
 
+                got_text = False
                 try:
-                    async for msg in client.receive_response():
-                        if isinstance(msg, AssistantMessage):
-                            for block in msg.content:
-                                if hasattr(block, "text") and block.text.strip():
-                                    await websocket.send_json({"type": "assistant", "text": block.text})
-                                elif hasattr(block, "name"):
-                                    await websocket.send_json({"type": "tool", "text": f"Using: {block.name}"})
-                        elif isinstance(msg, ResultMessage):
-                            if msg.subtype == "error":
-                                await websocket.send_json({"type": "error", "text": str(msg.error)})
+                    got_text = await process_response(client, websocket)
                 except Exception as e:
                     if "rate_limit_event" not in str(e):
                         await websocket.send_json({"type": "error", "text": str(e)})
+
+                # Rate limit killed the loop before text arrived — retry
+                if not got_text:
+                    await asyncio.sleep(2)
+                    try:
+                        await client.query("continue")
+                        await process_response(client, websocket)
+                    except Exception:
+                        pass
 
                 await websocket.send_json({"type": "done"})
 
