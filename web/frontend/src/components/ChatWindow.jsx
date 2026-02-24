@@ -139,6 +139,26 @@ export default function ChatWindow({ agent }) {
     localStorage.removeItem(`chat_${agent.id}`);
   };
 
+  const exportChat = () => {
+    const lines = [`# ${agent.name} — Chat Export`, `_${new Date().toLocaleDateString()}_`, ""];
+    messages.forEach((msg) => {
+      if (msg.role === "user") {
+        lines.push(`**You:** ${msg.text}`, "");
+      } else if (msg.role === "assistant") {
+        lines.push(`**${agent.name}:**`, "", msg.text, "");
+      } else if (msg.role === "tool") {
+        lines.push(`> _${getToolLabel(msg.text, false)}_`, "");
+      }
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${agent.id}_chat_${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const suggestions = SUGGESTIONS[agent.id] || [];
 
   return (
@@ -152,7 +172,10 @@ export default function ChatWindow({ agent }) {
           </span>
         </div>
         {messages.length > 0 && (
-          <button className="new-chat-btn" onClick={clearChat}>New Chat</button>
+          <div className="chat-actions">
+            <button className="chat-action-btn" onClick={exportChat}>Export</button>
+            <button className="chat-action-btn" onClick={clearChat}>New Chat</button>
+          </div>
         )}
       </div>
 
