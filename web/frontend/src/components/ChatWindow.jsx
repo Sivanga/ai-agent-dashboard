@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import Markdown from "react-markdown";
 
 const TOOL_LABELS = {
   search_knowledge_base: { loading: "Searching knowledge base...", done: "Searched knowledge base" },
@@ -149,8 +150,13 @@ export default function ChatWindow({ agent }) {
               {msg.role === "error" && "❌ Error"}
             </span>
             <div className="msg-text">
-              {msg.role === "tool" ? getToolLabel(msg.text, msg.loading) : msg.text}
-              {msg.loading && <span className="tool-spinner"></span>}
+              {msg.role === "assistant" ? (
+                <Markdown>{msg.text}</Markdown>
+              ) : msg.role === "tool" ? (
+                <>{getToolLabel(msg.text, msg.loading)}{msg.loading && <span className="tool-spinner"></span>}</>
+              ) : (
+                msg.text
+              )}
             </div>
           </div>
         ))}
