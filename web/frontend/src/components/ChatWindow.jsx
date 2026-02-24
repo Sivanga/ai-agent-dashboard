@@ -45,8 +45,22 @@ const SUGGESTIONS = {
   ],
 };
 
+function loadHistory(agentId) {
+  try {
+    const saved = localStorage.getItem(`chat_${agentId}`);
+    return saved ? JSON.parse(saved) : [];
+  } catch { return []; }
+}
+
+function saveHistory(agentId, messages) {
+  const toSave = messages.filter(m => m.role !== "error").map(({ loading, ...rest }) => rest);
+  if (toSave.length > 0) {
+    localStorage.setItem(`chat_${agentId}`, JSON.stringify(toSave));
+  }
+}
+
 export default function ChatWindow({ agent }) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => loadHistory(agent.id));
   const [input, setInput] = useState("");
   const [status, setStatus] = useState("Connecting...");
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +68,7 @@ export default function ChatWindow({ agent }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    setMessages([]);
+    setMessages(loadHistory(agent.id));
     setStatus("Connecting...");
 
     const ws = new WebSocket(`ws://localhost:8000/ws/${agent.id}`);
@@ -98,6 +112,11 @@ export default function ChatWindow({ agent }) {
     return () => ws.close();
   }, [agent.id]);
 
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    saveHistory(agent.id, messages);
+  }, [messages, agent.id]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -115,6 +134,11 @@ export default function ChatWindow({ agent }) {
     setInput("");
   };
 
+  const clearChat = () => {
+    setMessages([]);
+    localStorage.removeItem(`chat_${agent.id}`);
+  };
+
   const suggestions = SUGGESTIONS[agent.id] || [];
 
   return (
@@ -127,6 +151,9 @@ export default function ChatWindow({ agent }) {
             {status}
           </span>
         </div>
+        {messages.length > 0 && (
+          <button className="new-chat-btn" onClick={clearChat}>New Chat</button>
+        )}
       </div>
 
       <div className="messages">
